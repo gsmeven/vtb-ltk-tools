@@ -12,7 +12,6 @@
 ## 🤖 Autonomous Bot Disclaimer
 
 > [!NOTE]
-> **Headless Infrastructure / AI-Generated Bot**  
 > This repository, its automated GitHub Actions workflows, and integration pipelines were scaffolded and generated almost entirely with AI assistance. It operates strictly as an autonomous compilation bot designed to track official upstream [League Toolkit](https://github.com/LeagueToolkit) repositories, synthesize and compile the latest reverse-engineering tools directly from Rust source code in the cloud, and serve them with zero human maintenance for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
 
 ---
@@ -60,7 +59,7 @@ Both tools are part of the modern **Rust**-based League Toolkit ecosystem:
 
 ## 📥 Direct Download
 
-[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
+**VTB** automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
 
 For standalone scripts, custom automation, or manual troubleshooting, grab the latest precompiled bundle here:
 
