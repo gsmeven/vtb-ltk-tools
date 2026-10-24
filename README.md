@@ -1,91 +1,70 @@
 # ltk-tools (.exe) for vtb
 
-> Autonomous cloud compilation pipeline providing bleeding-edge Windows binaries of **League Toolkit (LTK)** for [Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder).
+> Automated CI/CD pipeline that builds and serves bleeding-edge Windows binaries of **League Toolkit (LTK)** tools for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
 
-[![Build Pipeline](https://img.shields.io/github/actions/workflow/status/gsmeven/vtb-ltk-tools/update-tools.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI%2FCD)](https://github.com/gsmeven/vtb-ltk-tools/actions)
-[![Release: tools-latest](https://img.shields.io/badge/release-tools--latest-blue?style=flat-square&logo=github)](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest)
-[![Maintained By Agent](https://img.shields.io/badge/Maintained%20By-Autonomous%20Agent-blueviolet?style=flat-square&logo=openai&logoColor=white)](#-autonomous-agent-manifest)
-[![Toolchain](https://img.shields.io/badge/Compiled%20With-Rust%20Stable-dea584?style=flat-square&logo=rust&logoColor=white)](https://www.rust-lang.org/)
-[![Cadence](https://img.shields.io/badge/Cron-Every%203%20Hours-brightgreen?style=flat-square)](#-autonomous-execution-loop)
+[![Build and Release Tools](https://github.com/gsmeven/vtb-ltk-tools/actions/workflows/update-tools.yml/badge.svg)](https://github.com/gsmeven/vtb-ltk-tools/actions)
+[![Release: tools-latest](https://img.shields.io/badge/release-tools--latest-blue?logo=github)](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest)
+[![Check Cadence](https://img.shields.io/badge/cron-every%203%20hours-brightgreen)](#-how-it-works)
 
 ---
 
-## 🤖 Autonomous Agent Manifest
+## 🤖 Autonomous Bot Disclaimer
 
-> **System Operational Notice**  
-> This repository, its automated GitHub Actions compilation pipelines, commit-diffing heuristics, and documentation were entirely engineered and synthesized by an **autonomous AI agent** executing directives for [Neve](https://github.com/gsmeven).
-> 
-> The agent's dedicated mission is to eliminate human maintenance from the toolchain delivery layer: monitoring official upstream [League Toolkit](https://github.com/LeagueToolkit) codebases, compiling native Windows binaries directly from Rust source trees in cloud runners, and serving a verified, zero-dependency payload to Vanilla True Builder.
+This repository, its automated GitHub Actions pipelines, and packaging routines were scaffolded and are maintained by an AI agent acting for [Neve](https://github.com/gsmeven). It operates strictly as an autonomous compilation bot designed to track upstream **League Toolkit** repositories, build native Windows binaries directly from Rust source in the cloud, and provide zero-maintenance dependencies for **Vanilla True Builder**.
 
 ---
 
-## ⚡ Purpose & Architecture
+## 📖 Overview
 
-[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder) requires underlying reverse-engineering tools to decompile and reconstruct League of Legends game archives.
+**Vanilla True Builder** is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install the Rust toolchain, Cargo, Git, or C++ compilers locally, this repository automates the upstream build pipeline.
 
-These upstream utilities are maintained by the League Toolkit team as native **Rust** source crates (`ltk_wad` and `ltk_ritobin`). Forcing end users or builders to compile them locally requires:
-* Installing the full Rust toolchain (`rustup`, `cargo`)
-* Installing Git
-* Multi-gigabyte Microsoft Visual C++ (MSVC) build dependencies
-
-This autonomous worker resolves that friction entirely. Every **3 hours**, the agent polls upstream source repositories, triggers automated cloud compilation for detected revisions, verifies binary outputs, and maintains an atomic rolling release: **`tools.zip`**.
+Every 3 hours, a GitHub Actions workflow monitors the upstream **League Toolkit** repositories for new commits. Whenever changes are detected, it freshly compiles and packages standalone Windows `.exe` files into a single bundle: **`tools.zip`**, the core dependency required to run the builder.
 
 ---
 
-## 🛠️ Binary Specification Matrix
+## 🛠️ Included Tools
 
-All executables are compiled natively from source on `windows-latest` runners:
+Both tools are compiled directly from upstream **Rust** source crates:
 
-| Binary | Upstream Crate / Source | Toolchain | Primary Role |
+| Binary | Source Repository / Crate | Language | Description |
 | :--- | :--- | :---: | :--- |
-| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | **Rust** | Unpacks, inspects, extracts, and repacks `.wad.client` archive archives. |
-| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | **Rust** | Two-way serializer: translates binary `.bin` property trees to editable text and compiles edited trees back to binary format. |
+| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | **Rust** | Extracts and builds `.wad.client` game archives. |
+| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | **Rust** | Serializes/deserializes League `.bin` property files to text. |
 
 ---
 
-## ⚙️ Autonomous Execution Loop
+## ⚙️ How It Works
 
-The agent follows a deterministic four-phase lifecycle with zero manual intervention:
+1. **Smart Commit-State Diffing:**  
+   The runner queries the GitHub API for the latest commit hashes across upstream locations:
+   - `LeagueToolkit/wadtools` (`main`)
+   - `LeagueToolkit/ritobin-tools` (`main`)
+   - `LeagueToolkit/league-toolkit` (`crates/ltk_ritobin`)
+   - `LeagueToolkit/league-toolkit` (`crates/ltk_wad`)
 
-```
-Upstream Repos ──► Commit Hash Diff ──► [Unchanged?] ──► True  ──► Immediate Abort (0s wasted)
-                                              │
-                                              └──► False ──► Ephemeral Windows Runner
-                                                                      │
-                                                                      ▼
-                                                              cargo install --git
-                                                                      │
-                                                                      ▼
-                                                              Package tools.zip
-                                                                      │
-                                                                      ▼
-                                                              Sync tools-latest
-```
+2. **Zero Resource Waste:**  
+   If the upstream state matches the current description in the `tools-latest` release, the runner exits immediately to conserve GitHub Action minutes.
 
-1. **Upstream Commit Diffing:**  
-   The pipeline queries the GitHub REST API across official upstream branches and crate subtrees (`ltk_wad`, `ltk_ritobin`).
-2. **Zero-Waste Early Abort:**  
-   If upstream commit hashes match the manifest of the current `tools-latest` release, the workflow exits in seconds to conserve action quotas.
-3. **Cloud Native Compilation:**  
-   If new commits exist, an isolated Windows runner builds fresh x64 binaries via `cargo install` against the stable Rust toolchain.
-4. **Atomic Delivery:**  
-   Binaries are normalized (`wadtools.exe`, `ritobin.exe`), compressed into `tools.zip`, and deployed directly over the rolling release tag.
+3. **Clean Windows Compilation:**  
+   Uses the official Rust stable toolchain on `windows-latest` to build standalone 64-bit executables via `cargo install`.
+
+4. **Predictable Packaging:**  
+   Normalizes binary filenames (`wadtools.exe` and `ritobin.exe`), bundles them into `tools.zip`, and updates the permanent release tag: `tools-latest`.
 
 ---
 
-## 📥 Artifact Distribution & Client Sync
+## 📦 Direct Download
 
-Vanilla True Builder natively integrates with this endpoint. During initial setup or patch cycles, the builder queries this repository and silently synchronizes binaries in the background without user intervention.
+**Vanilla True Builder** automatically handles syncing and updating these binaries in the background.
 
-For manual development, custom tooling, or standalone usage, the latest compiled bundle is always available:
+For manual usage, custom automation, or standalone scripts, the latest precompiled bundle can always be fetched directly from:
 
-⤓ **[Download tools.zip (Latest Stable Build)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
+🔗 **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
 
 ---
 
-## 👥 Ecosystem & Credits
+## 🤝 Credits & Acknowledgments
 
-* **[Neve](https://github.com/gsmeven)** — Creator and maintainer of [Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder).
-* **[League Toolkit](https://github.com/LeagueToolkit)** — Foundational reverse-engineering infrastructure by Crauzer, moonshadow565, and community contributors.
-* **Agent Operations:** Build pipeline synthesis, maintenance loops, and repository scaffolding autonomously operated via AI.
-* **Legal Disclaimer:** This project is an independent automated utility and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
+* **[Neve](https://github.com/gsmeven):** Creator and maintainer of **Vanilla True Builder**.
+* **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the core open-source League of Legends modding infrastructure.
+* **Disclaimer:** This project is an independent tool and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
