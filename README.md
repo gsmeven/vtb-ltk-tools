@@ -58,7 +58,7 @@ Both tools are part of the modern **Rust**-based League Toolkit ecosystem:
 
 ---
 
-## 📦 Direct Download & Auto-Update
+## 📥 Direct Download & Auto-Update
 
 > [!TIP]
 > **Handled Automatically by Vanilla True Builder:**  
@@ -66,7 +66,7 @@ Both tools are part of the modern **Rust**-based League Toolkit ecosystem:
 
 For custom automation pipelines, third-party scripts, or manual troubleshooting, the latest standalone bundle can always be downloaded directly:
 
-🔗 **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
+**[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
 
 ---
 
