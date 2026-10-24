@@ -9,59 +9,60 @@
 
 ---
 
-## 🤖 Autonomous Bot Disclaimer
+## 🤖 Autonomous Infrastructure
 
-> [!NOTE]
-> This repository, its automated GitHub Actions workflows, and integration pipelines were scaffolded and generated almost entirely with AI assistance. It operates strictly as an autonomous compilation bot designed to track official upstream [League Toolkit](https://github.com/LeagueToolkit) repositories, synthesize and compile the latest reverse-engineering tools directly from Rust source code in the cloud, and serve them with zero human maintenance for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
+This repository operates strictly as a headless, autonomous compilation bot. Its continuous integration workflows, build matrices, and delivery pipelines were scaffolded and orchestrated with AI assistance to achieve a zero-maintenance build bridge.
+
+The bot continuously tracks upstream [League Toolkit](https://github.com/LeagueToolkit) repositories, compiles raw Rust source code directly in isolated cloud runners, and publishes verified Windows `.exe` binaries tailored for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) without requiring human intervention.
 
 ---
 
 ## 📖 Overview
 
-[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) is designed to be a completely self-sufficient and frictionless restoration suite. 
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) is an automated restoration engine designed to be entirely self-sufficient. 
 
-The core League reverse-engineering tools maintained by the **League Toolkit (LTK)** team are developed natively in **Rust** (distributed as source crates like `ltk_wad` and `ltk_ritobin`). Normally, building them requires installing the full Rust toolchain (`rustup`, `cargo`), Git, and MSVC build tools.
+The foundational reverse-engineering tools in the League modding ecosystem are maintained by the **League Toolkit (LTK)** team as native **Rust** crates (`ltk_wad` and `ltk_ritobin`). Compiling them manually requires installing the Rust toolchain (`rustup`, `cargo`), Git, and Microsoft Visual C++ Build Tools.
 
-To eliminate this barrier for end-users, this repository serves as a headless compilation pipeline. Every **3 hours**, a scheduled GitHub Actions workflow checks upstream LTK commits, compiles clean standalone Windows x64 `.exe` binaries in an isolated cloud runner, and packages them into **`tools.zip`** — ready for immediate consumption.
+To spare users and developers from local compilation overhead, this bot handles the entire toolchain in the cloud. Every **3 hours**, it inspects upstream repositories for new commits, freshly compiles standalone x64 binaries, and bundles them into **`tools.zip`** — ready for instant consumption.
 
 ---
 
 ## 🛠️ Included Tools & Specifications
 
-Both tools are part of the modern **Rust**-based League Toolkit ecosystem:
+Both utilities are compiled directly from their upstream **Rust** source repositories:
 
-| Binary | Source Repository / Crate | Language | Purpose in Reverse Engineering |
+| Binary | Upstream Crate / Source | Language | Role in League Reverse Engineering |
 | :--- | :--- | :---: | :--- |
-| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | **Rust** | Extracts, unpacks, inspects, and repacks League of Legends `.wad.client` archive packages. |
-| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | **Rust** | Serializes binary property tree files (`.bin`) into readable plaintext format and compiles edited text back into binary format. |
+| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | **Rust** | Unpacks, inspects, extracts, and repacks `.wad.client` archive packages. |
+| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | **Rust** | Serializes binary property tree files (`.bin`) into editable plaintext and compiles them back to binary format. |
 
 ---
 
 ## ⚙️ How It Works
 
-1. **Smart Commit-State Diffing:**  
-   The runner queries the GitHub API for the latest commit hashes across upstream Rust repositories:
+1. **Upstream Commit Diffing:**  
+   The bot checks the GitHub API across all relevant upstream repositories and crate trees:
    * `LeagueToolkit/wadtools` (`main`)
    * `LeagueToolkit/ritobin-tools` (`main`)
    * `LeagueToolkit/league-toolkit` (`crates/ltk_ritobin`)
    * `LeagueToolkit/league-toolkit` (`crates/ltk_wad`)
 
 2. **Zero Resource Waste:**  
-   If the upstream commit hashes match the current release description in [`tools-latest`](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest), the workflow aborts immediately to conserve GitHub Action minutes.
+   If the upstream commit hashes match the current release description in [`tools-latest`](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest), the workflow exits immediately to conserve runner minutes.
 
 3. **Cloud-Native Rust Compilation:**  
-   Uses the official Rust stable toolchain on a clean `windows-latest` runner to compile standalone x64 binaries via `cargo install`.
+   Spawns a fresh `windows-latest` runner equipped with the official stable Rust toolchain to compile standalone, dependency-free x64 binaries via `cargo install`.
 
 4. **Deterministic Packaging:**  
-   Normalizes binary filenames (`wadtools.exe` and `ritobin.exe`), archives them into `tools.zip`, and updates the permanent release tag: **`tools-latest`**.
+   Normalizes binary names (`wadtools.exe` and `ritobin.exe`), archives them into `tools.zip`, and updates the persistent **`tools-latest`** release tag.
 
 ---
 
 ## 📥 Direct Download
 
-**VTB** automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and updates these binaries in the background, so manual installation is not required for standard usage.
 
-For standalone scripts, custom automation, or manual troubleshooting, grab the latest precompiled bundle here:
+For custom automation pipelines, third-party scripts, or manual troubleshooting, grab the latest precompiled bundle here:
 
 ⤓ **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
 
@@ -69,6 +70,6 @@ For standalone scripts, custom automation, or manual troubleshooting, grab the l
 
 ## 🤝 Credits & Acknowledgments
 
-* **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the foundational open-source League of Legends modding and reverse-engineering infrastructure.
-* **[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder):** Main project repository maintained by [gsmeven](https://github.com/gsmeven).
+* **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the core open-source League of Legends modding infrastructure.
+* **[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder):** Canonical restoration engine maintained by [gsmeven](https://github.com/gsmeven).
 * **Legal Disclaimer:** This project is an independent automated utility and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
