@@ -1,33 +1,3 @@
-## 📥 Direct Download
-
-[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
-
-For standalone scripts, custom automation, or manual troubleshooting, grab the latest precompiled bundle here:
-
-⤓ **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
-```
-
----
-
-### Opção 2: Estilo Tabela / Especificação Técnica
-
-Se preferir no formato tabular (muito comum em repositórios de binários de CI/CD):
-
-```markdown
-## 📥 Direct Download
-
-[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) handles syncing and auto-updating these binaries natively. Manual downloads are only needed for custom pipelines or troubleshooting:
-
-| Package | Contents | Platform | Direct Link |
-| :--- | :--- | :---: | :--- |
-| **`tools.zip`** | `wadtools.exe` + `ritobin.exe` (Rust) | Windows x64 | **[Download Latest Release](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)** |
-```
-
----
-
-### O README Completo Atualizado (com a Opção 1 e limpando o `* ` solto no final):
-
-```markdown
 # ltk-tools (.exe) for vtb
 
 > Automated CI/CD build bot serving bleeding-edge Windows binaries of **League Toolkit (LTK)** reverse-engineering tools for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
