@@ -1,16 +1,17 @@
-# ltk-tools (.exe) for vtb
+# ltk-tools (.exe) for Vanilla True Builder
 
-> Automated CI/CD pipeline that builds and serves bleeding-edge Windows binaries of **League Toolkit (LTK)** tools for **Vanilla True Builder**.
+> Automated CI/CD pipeline that builds and serves bleeding-edge Windows binaries of **League Toolkit (LTK)** tools for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
 
 [![Build and Release Tools](https://github.com/gsmeven/vtb-ltk-tools/actions/workflows/update-tools.yml/badge.svg)](https://github.com/gsmeven/vtb-ltk-tools/actions)
 [![Release: tools-latest](https://img.shields.io/badge/release-tools--latest-blue?logo=github)](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest)
+[![Vanilla True Builder](https://img.shields.io/badge/Companion%20Repo-Vanilla%20True%20Builder-orange?logo=github)](https://github.com/gsmeven/vanilla-true-builder)
 [![Check Cadence](https://img.shields.io/badge/cron-every%203%20hours-brightgreen)](#-how-it-works)
 
 ---
 
 ## 📖 Overview
 
-**Vanilla True Builder** is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install Rust, Git, or toolchains locally, this repository automates the upstream build pipeline.
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install Rust, Git, or build toolchains locally, this repository automates the upstream build pipeline.
 
 Every 3 hours, a GitHub Actions workflow monitors the upstream **League Toolkit** repositories for new commits. Whenever changes are detected, it freshly compiles and packages standalone Windows `.exe` files into a single bundle: **`tools.zip`**, the core dependency required to run the builder.
 
@@ -47,13 +48,20 @@ Every 3 hours, a GitHub Actions workflow monitors the upstream **League Toolkit*
 
 ## 📦 Direct Download
 
-For **Vanilla True Builder** scripts or manual usage, the latest bundle can always be fetched directly from:
+For [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) scripts or manual usage, the latest bundle can always be fetched directly from:
 
 🔗 **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
+
+---
+
+## 🤖 AI Disclaimer & Purpose
+
+> **Notice:** This repository and its automation scripts were **predominantly generated and structured by AI**. Its sole purpose is to act as a lightweight, automated pipeline to synthesize and package bleeding-edge reverse-engineering tools from upstream LTK directly for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
 
 ---
 
 ## 🤝 Credits & Acknowledgments
 
 * **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to the LTK team and contributors for maintaining the core open-source League of Legends modding infrastructure.
+* **[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder):** Main project repository maintained by [gsmeven](https://github.com/gsmeven).
 * **Disclaimer:** This project is an independent tool and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
