@@ -1,3 +1,42 @@
+Essa caixa de `[!TIP]` com lâmpada realmente costuma poluir e quebrar o ritmo da leitura técnica.
+
+Aqui está a seção redesenhada: **sem caixa de alerta**, com texto direto em 2 frases objetivas que mantêm 100% das informações (auto-update do VTB + link para quem precisa avulso) e um visual limpo de documentação profissional:
+
+---
+
+### Opção 1: Texto Corrido & Direto (Recomendada — Mais elegante)
+
+```markdown
+## 📥 Direct Download
+
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
+
+For standalone scripts, custom automation, or manual troubleshooting, grab the latest precompiled bundle here:
+
+⤓ **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
+```
+
+---
+
+### Opção 2: Estilo Tabela / Especificação Técnica
+
+Se preferir no formato tabular (muito comum em repositórios de binários de CI/CD):
+
+```markdown
+## 📥 Direct Download
+
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) handles syncing and auto-updating these binaries natively. Manual downloads are only needed for custom pipelines or troubleshooting:
+
+| Package | Contents | Platform | Direct Link |
+| :--- | :--- | :---: | :--- |
+| **`tools.zip`** | `wadtools.exe` + `ritobin.exe` (Rust) | Windows x64 | **[Download Latest Release](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)** |
+```
+
+---
+
+### O README Completo Atualizado (com a Opção 1 e limpando o `* ` solto no final):
+
+```markdown
 # ltk-tools (.exe) for vtb
 
 > Automated CI/CD build bot serving bleeding-edge Windows binaries of **League Toolkit (LTK)** reverse-engineering tools for [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder).
@@ -58,15 +97,13 @@ Both tools are part of the modern **Rust**-based League Toolkit ecosystem:
 
 ---
 
-## 📥 Direct Download & Auto-Update
+## 📥 Direct Download
 
-> [!TIP]
-> **Handled Automatically by Vanilla True Builder:**  
-> If you are using [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder), manual downloading is **not** required. The builder is already wired directly to this repository and automatically pulls and updates the latest compiled tools in the background whenever an update is published.
+[**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
 
-For custom automation pipelines, third-party scripts, or manual troubleshooting, the latest standalone bundle can always be downloaded directly:
+For standalone scripts, custom automation, or manual troubleshooting, grab the latest precompiled bundle here:
 
-**[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
+⤓ **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
 
 ---
 
@@ -75,4 +112,4 @@ For custom automation pipelines, third-party scripts, or manual troubleshooting,
 * **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the foundational open-source League of Legends modding and reverse-engineering infrastructure.
 * **[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder):** Main project repository maintained by [gsmeven](https://github.com/gsmeven).
 * **Legal Disclaimer:** This project is an independent automated utility and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
-* 
+```
