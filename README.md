@@ -8,28 +8,28 @@
 
 ---
 
-## 🤖 Autonomous Bot Disclaimer
+## 🤖 AI Disclaimer
 
-This repository, its automated GitHub Actions pipelines, and packaging routines were scaffolded and are maintained by an AI agent acting for [Neve](https://github.com/gsmeven). It operates strictly as an autonomous compilation bot designed to track upstream **League Toolkit** repositories, build native Windows binaries directly from Rust source in the cloud, and provide zero-maintenance dependencies for **Vanilla True Builder**.
+This entire repository and its automation workflows were created mostly with AI. It has no active human maintenance — its only job is to run on a schedule, compile the latest upstream Rust tools from League Toolkit, and serve them ready to use for **Vanilla True Builder**.
 
 ---
 
 ## 📖 Overview
 
-**Vanilla True Builder** is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install the Rust toolchain, Cargo, Git, or C++ compilers locally, this repository automates the upstream build pipeline.
+**Vanilla True Builder** is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install Rust, Git, or toolchains locally, this repository automates the upstream build pipeline.
 
-Every 3 hours, a GitHub Actions workflow monitors the upstream **League Toolkit** repositories for new commits. Whenever changes are detected, it freshly compiles and packages standalone Windows `.exe` files into a single bundle: **`tools.zip`**, the core dependency required to run the builder.
+Every 3 hours, a GitHub Actions workflow wakes up and monitors the upstream **League Toolkit** repositories for new commits. Whenever changes are detected, it freshly compiles and packages standalone Windows `.exe` files into a single bundle: **`tools.zip`**, the core dependency required to run the builder.
 
 ---
 
 ## 🛠️ Included Tools
 
-Both tools are compiled directly from upstream **Rust** source crates:
+Both tools are written in **Rust** by the League Toolkit team and compiled directly from source:
 
-| Binary | Source Repository / Crate | Language | Description |
-| :--- | :--- | :---: | :--- |
-| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | **Rust** | Extracts and builds `.wad.client` game archives. |
-| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | **Rust** | Serializes/deserializes League `.bin` property files to text. |
+| Binary | Source Repository / Crate | Description |
+| :--- | :--- | :--- |
+| **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | Extracts and builds `.wad.client` game archives. |
+| **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | Serializes/deserializes League `.bin` property files to text. |
 
 ---
 
@@ -49,15 +49,15 @@ Both tools are compiled directly from upstream **Rust** source crates:
    Uses the official Rust stable toolchain on `windows-latest` to build standalone 64-bit executables via `cargo install`.
 
 4. **Predictable Packaging:**  
-   Normalizes binary filenames (`wadtools.exe` and `ritobin.exe`), bundles them into `tools.zip`, and updates the permanent release tag: `tools-latest`.
+   Normalizes the binary filenames (`wadtools.exe` and `ritobin.exe`), bundles them into `tools.zip`, and updates the permanent release tag: `tools-latest`.
 
 ---
 
 ## 📦 Direct Download
 
-**Vanilla True Builder** automatically handles syncing and updating these binaries in the background.
+**Vanilla True Builder** automatically handles downloading and updating these binaries in the background.
 
-For manual usage, custom automation, or standalone scripts, the latest precompiled bundle can always be fetched directly from:
+For manual usage, custom automation, or standalone scripts, the latest bundle can always be fetched directly from:
 
 🔗 **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
 
@@ -65,6 +65,6 @@ For manual usage, custom automation, or standalone scripts, the latest precompil
 
 ## 🤝 Credits & Acknowledgments
 
-* **[Neve](https://github.com/gsmeven):** Creator and maintainer of **Vanilla True Builder**.
-* **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the core open-source League of Legends modding infrastructure.
+* **[Neve](https://github.com/gsmeven):** Creator of **Vanilla True Builder**.
+* **[League Toolkit](https://github.com/LeagueToolkit):** Thanks to Crauzer, moonshadow565, and the LTK contributors for maintaining the core open-source League modding tools.
 * **Disclaimer:** This project is an independent tool and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
