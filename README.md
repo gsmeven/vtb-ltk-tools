@@ -1,12 +1,3 @@
-Essa caixa de `[!TIP]` com lâmpada realmente costuma poluir e quebrar o ritmo da leitura técnica.
-
-Aqui está a seção redesenhada: **sem caixa de alerta**, com texto direto em 2 frases objetivas que mantêm 100% das informações (auto-update do VTB + link para quem precisa avulso) e um visual limpo de documentação profissional:
-
----
-
-### Opção 1: Texto Corrido & Direto (Recomendada — Mais elegante)
-
-```markdown
 ## 📥 Direct Download
 
 [**Vanilla True Builder**](https://github.com/gsmeven/vanilla-true-builder) automatically queries and hot-swaps these binaries in the background, so manual installation is not required for normal usage. 
@@ -112,4 +103,3 @@ For standalone scripts, custom automation, or manual troubleshooting, grab the l
 * **[League Toolkit](https://github.com/LeagueToolkit):** Enormous thanks to Crauzer, moonshadow565, and the LTK contributors for pioneering and maintaining the foundational open-source League of Legends modding and reverse-engineering infrastructure.
 * **[Vanilla True Builder](https://github.com/gsmeven/vanilla-true-builder):** Main project repository maintained by [gsmeven](https://github.com/gsmeven).
 * **Legal Disclaimer:** This project is an independent automated utility and is not affiliated with, endorsed by, or sponsored by Riot Games. League of Legends is a registered trademark of Riot Games, Inc.
-```
