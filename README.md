@@ -1,4 +1,4 @@
-# vtb-ltk-tools (.exe)
+# vtb-ltk-tools
 
 [![Build Status](https://github.com/gsmeven/vtb-ltk-tools/actions/workflows/update-tools.yml/badge.svg)](https://github.com/gsmeven/vtb-ltk-tools/actions/workflows/update-tools.yml)
 [![Release](https://img.shields.io/github/v/release/gsmeven/vtb-ltk-tools?color=blue)](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest)
