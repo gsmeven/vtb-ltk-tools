@@ -6,21 +6,15 @@
 [![Release: tools-latest](https://img.shields.io/badge/release-tools--latest-blue?logo=github)](https://github.com/gsmeven/vtb-ltk-tools/releases/tag/tools-latest)
 [![Check Cadence](https://img.shields.io/badge/cron-every%203%20hours-brightgreen)](#-how-it-works)
 
----
-
 ## 🤖 AI Disclaimer
 
 This entire repository and its automation workflows were created mostly with AI. It has no active human maintenance — its only job is to run on a schedule, compile the latest upstream Rust tools from League Toolkit, and serve them ready to use for **Vanilla True Builder**.
-
----
 
 ## 📖 Overview
 
 **Vanilla True Builder** is designed to be a self-sufficient, frictionless League of Legends mod builder. To work smoothly without forcing users to install Rust, Git, or toolchains locally, this repository automates the upstream build pipeline.
 
 Every 3 hours, a GitHub Actions workflow wakes up and monitors the upstream **League Toolkit** repositories for new commits. Whenever changes are detected, it freshly compiles and packages standalone Windows `.exe` files into a single bundle: **`tools.zip`**, the core dependency required to run the builder.
-
----
 
 ## 🛠️ Included Tools
 
@@ -30,8 +24,6 @@ Both tools are written in **Rust** by the League Toolkit team and compiled direc
 | :--- | :--- | :--- |
 | **`wadtools.exe`** | [LeagueToolkit/wadtools](https://github.com/LeagueToolkit/wadtools) (`ltk_wad`) | Extracts and builds `.wad.client` game archives. |
 | **`ritobin.exe`** | [LeagueToolkit/ritobin-tools](https://github.com/LeagueToolkit/ritobin-tools) (`ltk_ritobin`) | Serializes/deserializes League `.bin` property files to text. |
-
----
 
 ## ⚙️ How It Works
 
@@ -51,8 +43,6 @@ Both tools are written in **Rust** by the League Toolkit team and compiled direc
 4. **Predictable Packaging:**  
    Normalizes the binary filenames (`wadtools.exe` and `ritobin.exe`), bundles them into `tools.zip`, and updates the permanent release tag: `tools-latest`.
 
----
-
 ## 📦 Direct Download
 
 **Vanilla True Builder** automatically handles downloading and updating these binaries in the background.
@@ -60,8 +50,6 @@ Both tools are written in **Rust** by the League Toolkit team and compiled direc
 For manual usage, custom automation, or standalone scripts, the latest bundle can always be fetched directly from:
 
 🔗 **[Download tools.zip (Latest Release)](https://github.com/gsmeven/vtb-ltk-tools/releases/download/tools-latest/tools.zip)**
-
----
 
 ## 🤝 Credits & Acknowledgments
 
