@@ -1,11 +1,20 @@
+# ==============================================================================
+# Pipeline: Build and Release Tools
+# Architecture: Fully Autonomous CI/CD
+# Purpose: Compiles and serves bleeding-edge Windows binaries of LTK tools
+# ==============================================================================
+
 name: Build and Release Tools
 
 on:
+  # Allows manual triggers from the GitHub Actions tab
   workflow_dispatch:
+  # Polls upstream repositories every 3 hours
   schedule:
     - cron: '0 */3 * * *'
 
 permissions:
+  # Required to create/update releases and upload assets
   contents: write
 
 jobs:
@@ -13,18 +22,22 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Step 1: Query GitHub REST API to detect changes in upstream parser repositories
       - name: Check upstream commits for ritobin and wadtools
         id: check_upstream
         shell: pwsh
         run: |
+          # Fetch latest 8-character commit SHAs from LeagueToolkit source trees
           $wadtools_sha = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/wadtools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
           $ritobin_sha  = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/ritobin-tools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
           $ltk_ritobin_sha = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/league-toolkit/commits?path=crates/ltk_ritobin&sha=main&per_page=1")[0].sha.Substring(0, 8)
           $ltk_wad_sha     = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/league-toolkit/commits?path=crates/ltk_wad&sha=main&per_page=1")[0].sha.Substring(0, 8)
 
+          # Combine commit SHAs into a unified fingerprint
           $current_state = "wadtools:$wadtools_sha | ritobin_tools:$ritobin_sha | ltk_ritobin:$ltk_ritobin_sha | ltk_wad:$ltk_wad_sha"
           Write-Host "Upstream parser state: $current_state"
 
+          # Idempotency check: Skip build if current release already matches this state
           $repo = "${{ github.repository }}"
           $needs_build = $true
           try {
@@ -34,16 +47,19 @@ jobs:
                   $needs_build = $false
               }
           } catch {
-              Write-Host "Initial release build or tag not found."
+              Write-Host "Initial release build or tag not found. Proceeding with build."
           }
 
+          # Export decision outputs to downstream steps
           echo "needs_build=$needs_build" >> $env:GITHUB_OUTPUT
           echo "current_state=$current_state" >> $env:GITHUB_OUTPUT
 
+      # Step 2: Install official stable Rust toolchain on the Windows runner
       - name: Setup Rust
         if: steps.check_upstream.outputs.needs_build == 'true'
         uses: dtolnay/rust-toolchain@stable
 
+      # Step 3: Fetch latest source code from Git and compile release binaries via Cargo
       - name: Compile wadtools and ritobin
         if: steps.check_upstream.outputs.needs_build == 'true'
         shell: pwsh
@@ -52,18 +68,22 @@ jobs:
           cargo install --git https://github.com/LeagueToolkit/wadtools.git --root ./dist
           cargo install --git https://github.com/LeagueToolkit/ritobin-tools.git --root ./dist
 
+      # Step 4: Resolve generated binary names to canonical filenames and compress into tools.zip
       - name: Normalize binaries and package
         if: steps.check_upstream.outputs.needs_build == 'true'
         shell: pwsh
         run: |
+          # Ensure exact binary naming standard expected by Vanilla True Builder
           Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*wad*" } | ForEach-Object {
               Move-Item -Path $_.FullName -Destination "./dist/bin/wadtools.exe" -Force
           }
           Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*ritobin*" } | ForEach-Object {
               Move-Item -Path $_.FullName -Destination "./dist/bin/ritobin.exe" -Force
           }
+          # Package both tools into a clean, distributable zip archive
           Compress-Archive -Path ./dist/bin/wadtools.exe, ./dist/bin/ritobin.exe -DestinationPath ./tools.zip -Force
 
+      # Step 5: Publish or update the rolling 'tools-latest' release tag with commit provenance
       - name: Publish Release
         if: steps.check_upstream.outputs.needs_build == 'true'
         uses: softprops/action-gh-release@v2
