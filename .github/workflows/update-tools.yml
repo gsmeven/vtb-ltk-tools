@@ -1,9 +1,3 @@
-# ==============================================================================
-# Pipeline: Build and Release Tools
-# Architecture: Fully Autonomous CI/CD
-# Purpose: Compiles and serves bleeding-edge Windows binaries of LTK tools
-# ==============================================================================
-
 name: Build and Release Tools
 
 on:
