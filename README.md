@@ -64,4 +64,4 @@ Underlying tools are created and maintained by the [LeagueToolkit](https://githu
 
 ## License
 
-Workflow automation scripts in this repository are licensed under the [GNU General Public License v3.0](LICENSE). Compiled utilities retain their respective upstream licenses (GPL-3.0).
+Workflow automation scripts in this repository are licensed under the [GNU General Public License v3.0](LICENSE). Compiled utilities retain their respective upstream licenses.
