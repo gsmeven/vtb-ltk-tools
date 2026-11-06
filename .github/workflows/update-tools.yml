@@ -59,22 +59,24 @@ jobs:
           cargo install --git https://github.com/LeagueToolkit/ritobin-tools.git --root ./dist
           cargo install --git https://github.com/LeagueToolkit/league-mod.git --root ./dist
 
-      # Step 4: Normalize binary names to canonical standard and compress into tools.zip
+      # Step 4: Move binaries into a 'tools' directory and package into tools.zip
       - name: Normalize binaries and package
         if: steps.check_upstream.outputs.needs_build == 'true'
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Path ./tools -Force
+
           Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*wad*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./dist/bin/wadtools.exe" -Force
+              Move-Item -Path $_.FullName -Destination "./tools/wadtools.exe" -Force
           }
           Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*ritobin*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./dist/bin/ritobin.exe" -Force
+              Move-Item -Path $_.FullName -Destination "./tools/ritobin.exe" -Force
           }
           Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*league-mod*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./dist/bin/league-mod.exe" -Force
+              Move-Item -Path $_.FullName -Destination "./tools/league-mod.exe" -Force
           }
 
-          Compress-Archive -Path ./dist/bin/wadtools.exe, ./dist/bin/ritobin.exe, ./dist/bin/league-mod.exe -DestinationPath ./tools.zip -Force
+          Compress-Archive -Path ./tools -DestinationPath ./tools.zip -Force
 
       # Step 5: Publish release tag
       - name: Publish Release
