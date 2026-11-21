@@ -2,6 +2,11 @@ name: Build and Release Tools
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'vtb-packer/**'
+      - '.github/workflows/**'
   schedule:
     - cron: '0 */3 * * *'
 
@@ -13,28 +18,37 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Query GitHub REST API to detect changes in upstream repositories
-      - name: Check upstream commits for ritobin, wadtools, and league-mod
+      - name: Checkout vtb-ltk-tools
+        uses: actions/checkout@v4
+
+      # Step 1: Query GitHub REST API to detect relevant upstream/local changes
+      - name: Check upstream commits
         id: check_upstream
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $wadtools_sha   = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/wadtools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
-          $ritobin_sha    = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/ritobin-tools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
-          $league_mod_sha = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/league-mod/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
-          $ltk_ritobin_sha = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/league-toolkit/commits?path=crates/ltk_ritobin&sha=main&per_page=1")[0].sha.Substring(0, 8)
-          $ltk_wad_sha     = (Invoke-RestMethod -Uri "https://api.github.com/repos/LeagueToolkit/league-toolkit/commits?path=crates/ltk_wad&sha=main&per_page=1")[0].sha.Substring(0, 8)
+          $headers = @{
+            "Authorization" = "Bearer $env:GH_TOKEN"
+            "User-Agent"    = "vtb-ltk-tools-ci"
+          }
 
-          # Combine commit SHAs into a unified fingerprint
-          $current_state = "wadtools:$wadtools_sha | ritobin_tools:$ritobin_sha | league_mod:$league_mod_sha | ltk_ritobin:$ltk_ritobin_sha | ltk_wad:$ltk_wad_sha"
-          Write-Host "Upstream parser state: $current_state"
+          $wadtools_sha = (Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/LeagueToolkit/wadtools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
+          $ritobin_sha  = (Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/LeagueToolkit/ritobin-tools/commits?sha=main&per_page=1")[0].sha.Substring(0, 8)
+          $modproj_sha  = (Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/LeagueToolkit/league-mod/commits?path=crates/ltk_mod_project&sha=main&per_page=1")[0].sha.Substring(0, 8)
+          $modpkg_sha   = (Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/LeagueToolkit/league-mod/commits?path=crates/ltk_modpkg&sha=main&per_page=1")[0].sha.Substring(0, 8)
+          $packer_sha   = (git log -n 1 --format="%h" -- vtb-packer)
 
-          # Idempotency check: Skip build if current release already matches this state
+          $current_state = "wadtools:$wadtools_sha | ritobin_tools:$ritobin_sha | ltk_mod_project:$modproj_sha | ltk_modpkg:$modpkg_sha | vtb_packer:$packer_sha"
+          Write-Host "Upstream/local state: $current_state"
+
           $repo = "${{ github.repository }}"
           $needs_build = $true
           try {
-              $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/tags/tools-latest"
-              if ($release.body -and $release.body.Contains($current_state) -and "${{ github.event_name }}" -ne "workflow_dispatch") {
-                  Write-Host "No relevant upstream changes detected. Skipping build."
+              $release = Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$repo/releases/tags/tools-latest"
+              $force_events = @("workflow_dispatch", "push")
+              if ($release.body -and $release.body.Contains($current_state) -and ($force_events -notcontains "${{ github.event_name }}")) {
+                  Write-Host "No relevant changes detected. Skipping build."
                   $needs_build = $false
               }
           } catch {
@@ -49,31 +63,51 @@ jobs:
         if: steps.check_upstream.outputs.needs_build == 'true'
         uses: dtolnay/rust-toolchain@stable
 
-      # Step 3: Fetch source code from Git and compile release binaries via Cargo
-      - name: Compile wadtools, ritobin, and league-mod
+      # Step 3: Compile wadtools, ritobin-tools, and vtb-packer
+      - name: Compile wadtools, ritobin-tools, and vtb-packer
         if: steps.check_upstream.outputs.needs_build == 'true'
         shell: pwsh
         run: |
-          mkdir dist -Force
-          cargo install --git https://github.com/LeagueToolkit/wadtools.git --root ./dist
-          cargo install --git https://github.com/LeagueToolkit/ritobin-tools.git --root ./dist
-          cargo install --git https://github.com/LeagueToolkit/league-mod.git --root ./dist
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Path ./dist -Force | Out-Null
 
-      # Step 4: Move binaries into a 'tools' directory and package into tools.zip
-      - name: Normalize binaries and package
+          cargo install --git https://github.com/LeagueToolkit/wadtools.git --locked --root ./dist
+          if ($LASTEXITCODE -ne 0) { throw "Failed to compile wadtools" }
+
+          cargo install --git https://github.com/LeagueToolkit/ritobin-tools.git --locked --root ./dist
+          if ($LASTEXITCODE -ne 0) { throw "Failed to compile ritobin-tools" }
+
+          cargo build --release --manifest-path ./vtb-packer/Cargo.toml
+          if ($LASTEXITCODE -ne 0) { throw "Failed to compile vtb-packer" }
+
+      # Step 4: Normalize binaries, verify presence & run smoke tests before packaging
+      - name: Normalize, verify binaries and package
         if: steps.check_upstream.outputs.needs_build == 'true'
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path ./tools -Force
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Path ./tools -Force | Out-Null
 
-          Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*wad*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./tools/wadtools.exe" -Force
+          $wadBin = Get-ChildItem ./dist/bin -Filter "*wad*.exe" | Select-Object -First 1
+          $ritBin = Get-ChildItem ./dist/bin -Filter "*ritobin*.exe" | Select-Object -First 1
+          $packerBin = Get-Item "./vtb-packer/target/release/vtb-packer.exe" -ErrorAction SilentlyContinue
+
+          if (-not $wadBin -or -not $ritBin -or -not $packerBin) {
+              throw "One or more compiled binaries were not found."
           }
-          Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*ritobin*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./tools/ritobin.exe" -Force
-          }
-          Get-ChildItem ./dist/bin | Where-Object { $_.Name -like "*league-mod*" } | ForEach-Object {
-              Move-Item -Path $_.FullName -Destination "./tools/league-mod.exe" -Force
+
+          Move-Item -Path $wadBin.FullName -Destination "./tools/wadtools.exe" -Force
+          Move-Item -Path $ritBin.FullName -Destination "./tools/ritobin.exe" -Force
+          Move-Item -Path $packerBin.FullName -Destination "./tools/league-mod.exe" -Force
+
+          foreach ($exe in @("./tools/wadtools.exe", "./tools/ritobin.exe", "./tools/league-mod.exe")) {
+              if (-not (Test-Path $exe) -or (Get-Item $exe).Length -le 0) {
+                  throw "Invalid binary: $exe"
+              }
+              & $exe --help | Out-Null
+              if ($LASTEXITCODE -ne 0) {
+                  throw "Smoke test failed for $exe"
+              }
           }
 
           Compress-Archive -Path ./tools -DestinationPath ./tools.zip -Force
@@ -85,7 +119,7 @@ jobs:
         with:
           tag_name: tools-latest
           name: "vtb-ltk-tools"
-          body: "Compiled from upstream parser commits: ${{ steps.check_upstream.outputs.current_state }}"
+          body: "Compiled from upstream commits: ${{ steps.check_upstream.outputs.current_state }}"
           files: ./tools.zip
           draft: false
           prerelease: false
