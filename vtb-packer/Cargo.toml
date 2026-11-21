@@ -1,0 +1,7 @@
+[package]
+name = "vtb-packer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ltk_mod_project = { git = "https://github.com/LeagueToolkit/league-mod.git", branch = "main", features = ["modpkg"] }
